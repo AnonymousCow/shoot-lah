@@ -1,7 +1,8 @@
 // modules
 var express     = require('express'),
     now         = require('now'),
-    app         = express.createServer();
+    app         = express.createServer(),
+    clock       = require('./lib/clock');
 
 // globals
 var options     = {
@@ -29,6 +30,7 @@ app.configure(function() {
     app.use(express.static(__dirname + '/public'));
 });
 
+// routing
 app.get('/', function(request, response, next) {
     response.render('index', {
         title   : 'Home'
@@ -43,18 +45,38 @@ if (!module.parent) {
     app.listen(options.port, options.host, function() {
         console.log("Listening on http://" + options.host + ":" + options.port);
 
-        var everyone = now.initialize(app);
+        var everyone    = now.initialize(app);
 
         everyone.now.distributeMessage  = function(msg) {
             everyone.now.receiveMessage(this.now.name, msg);
         };
 
+        everyone.now.sendMessage        = function(msg) {
+            switch(msg) {
+                case 'left':
+                    clock.moveLeft();
+                    break;
+
+                case 'right':
+                    clock.moveRight();
+                    break;
+            }
+        };
+
         everyone.connected(function() {
-            console.log("connected(): ", arguments);
+            everyone.now.receiveMessage('System', this.now.name + ' has joined the room!');
         });
 
         everyone.disconnected(function() {
-            console.log("disconnected(): ", arguments);
+            console.log("disconnected()", arguments);
         });
+
+        setInterval(function() {
+            if (everyone.count) {
+                clock.update();
+
+                everyone.now.receiveImage(clock.canvas.toDataURL());
+            }
+        }, 40);
     });
 }

@@ -3,13 +3,23 @@
         <input type="text" id="chat-text">
         <input type="button" id="chat-button" value="Send">
 
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.6.1/jquery.min.js"></script>
+        <section>
+            <img id="picture" />
+        </section>
+
+        <script src="js/jquery.min.js"></script>
+        <script src="js/jquery.keylisten.min.js"></script>
         <script src="nowjs/now.js"></script>
         <script>
             function init() {
                 now.name            = prompt("What is your name?", "");
+
                 now.receiveMessage  = function(name, msg) {
                     $("<div />").text(name + ": " + msg).appendTo("#messages");
+                };
+
+                now.receiveImage    = function(data) {
+                    $("#picture").attr("src", data);
                 };
 
                 $("#chat-button").click(function(event) {
@@ -19,11 +29,17 @@
                 });
 
                 now.ready(function() {
-                });
+                    $(document).keylisten(function(e) {
+                        switch(e.keyName) {
+                            case 'left':
+                                now.sendMessage('left');
+                                break;
 
-                now.core.on("disconnect", function() {
-                    console.log(this.now);
-                    console.log(this.user);
+                            case 'right':
+                                now.sendMessage('right');
+                                break;
+                        }
+                    });
                 });
             }
 
