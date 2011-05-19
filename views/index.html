@@ -1,0 +1,31 @@
+        <section id="messages"></section>
+
+        <input type="text" id="chat-text">
+        <input type="button" id="chat-button" value="Send">
+
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.6.1/jquery.min.js"></script>
+        <script src="nowjs/now.js"></script>
+        <script>
+            function init() {
+                now.name            = prompt("What is your name?", "");
+                now.receiveMessage  = function(name, msg) {
+                    $("<div />").text(name + ": " + msg).appendTo("#messages");
+                };
+
+                $("#chat-button").click(function(event) {
+                    now.distributeMessage($("#chat-text").val());
+
+                    $("#chat-text").val("");
+                });
+
+                now.ready(function() {
+                });
+
+                now.core.on("disconnect", function() {
+                    console.log(this.now);
+                    console.log(this.user);
+                });
+            }
+
+            $(document).ready(init);
+        </script>
