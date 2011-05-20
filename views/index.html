@@ -1,56 +1,19 @@
-        <section id="messages"></section>
-
-        <input type="text" id="chat-text">
-        <input type="button" id="chat-button" value="Send">
-
         <section>
-            <canvas id="screen" width="640" height="480" />
+            <!-- viewport -->
+            <canvas id="viewport" width="800" height="600">
+        </section>
+
+        <aside>
+            <!-- options -->
+            <input id="chat-text" type="text">
+            <input id="chat-button" type="button" value="Send">
+        </aside>
+
+        <section id="messages">
+            <!-- mesages -->
         </section>
 
         <script src="js/jquery.min.js"></script>
         <script src="js/jquery.keylisten.min.js"></script>
         <script src="nowjs/now.js"></script>
-        <script>
-            function init() {
-                var screen  = $("#screen")[0],
-                    context = screen.getContext('2d');
-
-                now.name            = prompt('What is your name?', '') || 'Generic Person';
-
-                now.receiveMessage  = function(name, msg) {
-                    $("<div />").text(name + ": " + msg).appendTo("#messages");
-                };
-
-                now.receiveImage    = function(data) {
-                    var image = new Image();
-
-                    image.onload = function(e) {
-                        context.drawImage(e.target, 0, 0);
-                    };
-
-                    image.src = data;
-                };
-
-                $("#chat-button").click(function(event) {
-                    now.distributeMessage($("#chat-text").val());
-
-                    $("#chat-text").val("");
-                });
-
-                now.ready(function() {
-                    $(document).keylisten(function(e) {
-                        var keyName = e.keyName;
-
-                        switch(keyName) {
-                            case 'left':
-                            case 'right':
-                            case 'space':
-                                now.keyboard(keyName);
-                                break;
-                        }
-                    });
-                });
-            }
-
-            $(document).ready(init);
-        </script>
+        <script src="js/shoot-lah.js"></script>

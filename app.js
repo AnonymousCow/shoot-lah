@@ -5,13 +5,12 @@ var express     = require('express'),
     now         = require('now'),
     app         = express.createServer(),
     viewport    = require('./lib/viewport');
-    //viewport  = require('./lib/clock');
 
 // globals
 var options     = {
-    host    : 'localhost',
+    host    : '192.168.0.105',
     port    : 8080,
-    fps     : 25
+    runEvery: 50
 };
 
 // configuration
@@ -47,42 +46,79 @@ module.exports  = app;
 // don't run if included as a module!
 if (!module.parent) {
     app.listen(options.port, options.host, function() {
-        var runEvery    = 1000 / options.fps;
-        var everyone    = now.initialize(app);
+        var everyone        = now.initialize(app),
+            loneController  = null;
 
+        // so we know what address and port we're bound to
         console.log('Listening on http://%s:%d', options.host, options.port);
-        console.log('FPS: %d', runEvery);
+
+        // so we know how often the graphics are drawn
+        console.log('Graphics rendered every %d milliseconds', options.runEvery);
 
         // global message distribution
         everyone.now.distributeMessage = function(msg) {
             everyone.now.receiveMessage(this.now.name, msg);
         };
 
-        // keyboard action
+        // keyboard handler
         everyone.now.keyboard = function(msg) {
+            if (loneController && this.user.clientId != loneController) {
+                // we have a controller and this client isn't it
+                console.log('Spectator input ignored');
+
+                return;
+            }
+
             switch(msg) {
-                case 'left':
-                case 'right':
                 case 'space':
+                    if (!loneController) {
+                        // client pressed the space key when no one else was the controller
+                        loneController = this.user.clientId;
+
+                        // let others know this client is now the controller
+                        everyone.now.receiveMessage('System', this.now.name + ' is now the Lone Controller!');
+                    }
+                case 'up'   :
+                case 'down' :
+                case 'left' :
+                case 'right':
                     viewport.keyboard(msg);
+
                     break;
             }
         };
 
+        // when clients connect
         everyone.connected(function() {
-            everyone.now.receiveMessage('System', this.now.name + ' has joined the simulation chamber!');
+            var message = this.now.name + ' has joined the Game Grid';
+
+            if (loneController && loneController != this.user.clientId) {
+                // we already have a Lone Controller, clients join in as spectators
+                message += ' as a spectator';
+            }
+
+            everyone.now.receiveMessage('System', message);
         });
 
+        // when clients disconnect
         everyone.disconnected(function() {
-            everyone.now.receiveMessage('System', this.now.name + ' has left the simulation chamber!');
+            everyone.now.receiveMessage('System', this.now.name + ' has left the Game Grid');
+
+            if (loneController && this.user.clientId == loneController) {
+                // this client was the Lone Controller, announce their departure!
+                everyone.now.receiveMessage('System', this.now.name + ' is no longer the Lone Controller!');
+            }
         });
 
+        // draw images at every specified interval
         setInterval(function() {
             if (everyone.count) {
+                // we have at least one client, do the rendering
                 viewport.render();
 
+                // send the image to everyone!
                 everyone.now.receiveImage(viewport.canvas.toDataURL());
             }
-        }, runEvery);
+        }, options.runEvery);
     });
 }

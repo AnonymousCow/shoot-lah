@@ -1,12 +1,26 @@
-var welcomeScreen = module.exports = function(viewport) {
+// welcome screen
+var welcomeScreen = module.exports = function welcome(screen, viewport) {
     var canvas  = viewport.canvas;
-    var screen  = require('./screen')(canvas);
 
     return screen.spawn({
-        show    : function() {
+        draw    : function() {
+            this.text({
+                text    : 'NodeHack 21052011',
+                location: {
+                    x: canvas.width / 2,
+                    y: 80
+                },
+                font    : '45px Monaco',
+                color   : '#ffffff',
+                align   : 'center'
+            });
+
             this.text({
                 text    : 'Shoot LAH!',
-                coords  : [ canvas.width / 2, canvas.height / 2 ],
+                location: {
+                    x: canvas.width / 2,
+                    y: canvas.height / 2
+                },
                 font    : '30px Calibri',
                 color   : '#ffffff',
                 align   : 'center'
@@ -14,7 +28,10 @@ var welcomeScreen = module.exports = function(viewport) {
 
             this.text({
                 text    : 'Press SPACEBAR to continue ...',
-                coords  : [ canvas.width / 2, canvas.height - 50 ],
+                location: {
+                    x: canvas.width / 2,
+                    y: canvas.height - 50
+                },
                 font    : '15px Calibri',
                 color   : '#ffffff',
                 align   : 'center'
@@ -24,7 +41,7 @@ var welcomeScreen = module.exports = function(viewport) {
             if ('space' == keyName) {
                 this.clear();
 
-                viewport.currentScreen = viewport.screens.game;
+                viewport.screens.current(viewport.screens.game);
                 viewport.render();
             }
         }
