@@ -9,7 +9,7 @@ var express     = require('express'),
 
 // globals
 var options     = {
-    host    : '10.0.1.132',
+    host    : 'localhost',
     port    : 8080,
     fps     : 25
 };
