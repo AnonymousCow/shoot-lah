@@ -1,13 +1,17 @@
+// app.js
+
 // modules
 var express     = require('express'),
     now         = require('now'),
     app         = express.createServer(),
-    clock       = require('./lib/clock');
+    viewport    = require('./lib/viewport');
+    //viewport  = require('./lib/clock');
 
 // globals
 var options     = {
-    host    : 'localhost',
-    port    : 8080
+    host    : '10.0.1.132',
+    port    : 8080,
+    fps     : 25
 };
 
 // configuration
@@ -43,40 +47,42 @@ module.exports  = app;
 // don't run if included as a module!
 if (!module.parent) {
     app.listen(options.port, options.host, function() {
-        console.log("Listening on http://" + options.host + ":" + options.port);
-
+        var runEvery    = 1000 / options.fps;
         var everyone    = now.initialize(app);
 
-        everyone.now.distributeMessage  = function(msg) {
+        console.log('Listening on http://%s:%d', options.host, options.port);
+        console.log('FPS: %d', runEvery);
+
+        // global message distribution
+        everyone.now.distributeMessage = function(msg) {
             everyone.now.receiveMessage(this.now.name, msg);
         };
 
-        everyone.now.sendMessage        = function(msg) {
+        // keyboard action
+        everyone.now.keyboard = function(msg) {
             switch(msg) {
                 case 'left':
-                    clock.moveLeft();
-                    break;
-
                 case 'right':
-                    clock.moveRight();
+                case 'space':
+                    viewport.keyboard(msg);
                     break;
             }
         };
 
         everyone.connected(function() {
-            everyone.now.receiveMessage('System', this.now.name + ' has joined the room!');
+            everyone.now.receiveMessage('System', this.now.name + ' has joined the simulation chamber!');
         });
 
         everyone.disconnected(function() {
-            console.log("disconnected()", arguments);
+            everyone.now.receiveMessage('System', this.now.name + ' has left the simulation chamber!');
         });
 
         setInterval(function() {
             if (everyone.count) {
-                clock.update();
+                viewport.render();
 
-                everyone.now.receiveImage(clock.canvas.toDataURL());
+                everyone.now.receiveImage(viewport.canvas.toDataURL());
             }
-        }, 40);
+        }, runEvery);
     });
 }

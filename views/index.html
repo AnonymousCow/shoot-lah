@@ -4,7 +4,7 @@
         <input type="button" id="chat-button" value="Send">
 
         <section>
-            <img id="picture" />
+            <canvas id="screen" width="640" height="480" />
         </section>
 
         <script src="js/jquery.min.js"></script>
@@ -12,14 +12,23 @@
         <script src="nowjs/now.js"></script>
         <script>
             function init() {
-                now.name            = prompt("What is your name?", "");
+                var screen  = $("#screen")[0],
+                    context = screen.getContext('2d');
+
+                now.name            = prompt('What is your name?', '') || 'Generic Person';
 
                 now.receiveMessage  = function(name, msg) {
                     $("<div />").text(name + ": " + msg).appendTo("#messages");
                 };
 
                 now.receiveImage    = function(data) {
-                    $("#picture").attr("src", data);
+                    var image = new Image();
+
+                    image.onload = function(e) {
+                        context.drawImage(e.target, 0, 0);
+                    };
+
+                    image.src = data;
                 };
 
                 $("#chat-button").click(function(event) {
@@ -30,13 +39,13 @@
 
                 now.ready(function() {
                     $(document).keylisten(function(e) {
-                        switch(e.keyName) {
-                            case 'left':
-                                now.sendMessage('left');
-                                break;
+                        var keyName = e.keyName;
 
+                        switch(keyName) {
+                            case 'left':
                             case 'right':
-                                now.sendMessage('right');
+                            case 'space':
+                                now.keyboard(keyName);
                                 break;
                         }
                     });
