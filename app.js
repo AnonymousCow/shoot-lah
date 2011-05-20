@@ -4,13 +4,13 @@
 var express     = require('express'),
     now         = require('now'),
     app         = express.createServer(),
-    viewport    = require('./lib/viewport');
+    viewport    = require('./lib/viewport')(800, 600);
 
 // globals
 var options     = {
     host    : '192.168.0.105',
     port    : 8080,
-    runEvery: 50
+    runEvery: 30
 };
 
 // configuration

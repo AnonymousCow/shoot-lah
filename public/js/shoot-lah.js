@@ -2,7 +2,8 @@
 $(document).ready(function() {
     var viewport    = $('#viewport')[0],
         context     = viewport.getContext('2d'),
-        pending     = false;
+        pending     = false,
+        runEvery    = 40;
 
     now.name            = prompt('What is your name?', 'Generic Person') || 'Generic Person';
 
@@ -48,7 +49,7 @@ $(document).ready(function() {
                         now.keyboard(keyName);
 
                         pending = false;
-                    }, 50);
+                    }, runEvery);
             }
         });
     });
