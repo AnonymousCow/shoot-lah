@@ -3,7 +3,7 @@ $(document).ready(function() {
     var viewport    = $('#viewport')[0],
         context     = viewport.getContext('2d'),
         pending     = false,
-        runEvery    = 40;
+        runEvery    = 60;
 
     now.name            = prompt('What is your name?', 'Generic Person') || 'Generic Person';
 

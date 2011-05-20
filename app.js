@@ -10,7 +10,7 @@ var express     = require('express'),
 var options     = {
     host    : '192.168.0.105',
     port    : 8080,
-    runEvery: 30
+    runEvery: 40
 };
 
 // configuration

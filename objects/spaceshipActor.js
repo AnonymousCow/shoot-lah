@@ -15,6 +15,7 @@ var spaceshipActor = module.exports = function spaceship(actor, options) {
             var hasMoved = false;
 
             switch (direction) {
+                /*
                 case 'up':
                     if (this.location.y >= amount) {
                         this.location.y -= amount;
@@ -32,6 +33,7 @@ var spaceshipActor = module.exports = function spaceship(actor, options) {
                     }
 
                     break;
+                    */
 
                 case 'left':
                     if (this.location.x >= amount) {
