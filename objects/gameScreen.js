@@ -21,7 +21,18 @@ var gameScreen = module.exports = function game(screen, viewport) {
                     break;
 
                 case 'space':
-                    this.dirty = spaceship.fire();
+                    this.text({
+                        text    : 'SHOOT! I can\'t shoot lah!',
+                        location: {
+                            x: this.size.width / 2,
+                            y: this.size.height / 2
+                        },
+                        font    : '45px Calibri',
+                        color   : '#ff0000',
+                        align   : 'center'
+                    });
+
+                    //this.dirty = spaceship.fire();
                     break;
             }
         }

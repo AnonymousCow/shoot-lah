@@ -16,13 +16,13 @@ var welcomeScreen = module.exports = function welcome(screen, viewport) {
 
             // the game's title
             this.text({
-                text    : 'Shoot LAH!',
+                text    : 'SHOOT LAH!',
                 location: {
                     x: this.size.width / 2,
                     y: this.size.height / 2
                 },
-                font    : '30px Calibri',
-                color   : '#ff0000',
+                font    : '45px Calibri',
+                color   : '#00ff00',
                 align   : 'center'
             });
 

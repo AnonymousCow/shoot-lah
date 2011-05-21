@@ -8,7 +8,7 @@ var express     = require('express'),
 
 // globals
 var options     = {
-    host    : '192.168.0.105',
+    host    : 'localhost',
     port    : 8080,
     runEvery: 40
 };
@@ -47,6 +47,7 @@ module.exports  = app;
 if (!module.parent) {
     app.listen(options.port, options.host, function() {
         var everyone        = now.initialize(app),
+            queue           = { },
             loneController  = null;
 
         // so we know what address and port we're bound to
@@ -92,6 +93,9 @@ if (!module.parent) {
         everyone.connected(function() {
             var message = this.now.name + ' has joined the Game Grid';
 
+            // add to the controller queue
+            queue[this.user.clientId] = this.now;
+
             if (loneController && loneController != this.user.clientId) {
                 // we already have a Lone Controller, clients join in as spectators
                 message += ' as a spectator';
@@ -107,6 +111,17 @@ if (!module.parent) {
             if (loneController && this.user.clientId == loneController) {
                 // this client was the Lone Controller, announce their departure!
                 everyone.now.receiveMessage('System', this.now.name + ' is no longer the Lone Controller!');
+                loneController = null;
+            }
+
+            // remove the client from the queue
+            delete queue[this.user.clientId];
+
+            for (var clientId in queue) {
+                loneController = clientId;
+
+                everyone.now.receiveMessage('System', queue[clientId] + ' is now the Lone Controller!');
+                break;
             }
         });
 
