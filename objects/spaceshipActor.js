@@ -1,5 +1,7 @@
 // spaceship actor
 var spaceshipActor = module.exports = function spaceship(actor, options) {
+    var path = require('path');
+
     return actor.spawn({
         location: options.location,
         size    : options.size,
@@ -58,6 +60,18 @@ var spaceshipActor = module.exports = function spaceship(actor, options) {
         },
         fire    : function() {
             /*
+            var thisBullet = this.screen.actors.bullet = require('./bulletActor')(actor, {
+                path    : path.normalize(__dirname + '/../graphics/bullet.png'),
+                location: {
+                    x: this.location.x,
+                    y: this.location.y - 100
+                },
+                size    : {
+                    width   : 94,
+                    height  : 100 
+                }
+            });
+
             this.screen.text({
                 text    : 'Shoot, I can\'t shoot!',
                 location: {

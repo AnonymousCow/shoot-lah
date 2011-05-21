@@ -1,7 +1,6 @@
 // game screen
 var gameScreen = module.exports = function game(screen, viewport) {
     return screen.spawn({
-        actors  : { },
         draw    : function() {
             this.clear();
 

@@ -2,6 +2,7 @@
 var welcomeScreen = module.exports = function welcome(screen, viewport) {
     return screen.spawn({
         draw    : function() {
+            // the event!
             this.text({
                 text    : 'NodeHack 21052011',
                 location: {
@@ -13,6 +14,7 @@ var welcomeScreen = module.exports = function welcome(screen, viewport) {
                 align   : 'center'
             });
 
+            // the game's title
             this.text({
                 text    : 'Shoot LAH!',
                 location: {
@@ -20,10 +22,11 @@ var welcomeScreen = module.exports = function welcome(screen, viewport) {
                     y: this.size.height / 2
                 },
                 font    : '30px Calibri',
-                color   : '#ffffff',
+                color   : '#ff0000',
                 align   : 'center'
             });
 
+            // spacebar to continue!
             this.text({
                 text    : 'Press SPACEBAR to continue ...',
                 location: {
@@ -37,9 +40,13 @@ var welcomeScreen = module.exports = function welcome(screen, viewport) {
         },
         keyboard: function(keyName) {
             if ('space' == keyName) {
+                // clear the current screen
                 this.clear();
 
+                // set the game screen to the current screen
                 viewport.screens.current(viewport.screens.game);
+
+                // render the screen to the viewport
                 viewport.render();
             }
         }
